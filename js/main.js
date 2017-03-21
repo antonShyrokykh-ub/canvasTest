@@ -92,12 +92,17 @@ function processData(array) {
 }
 
 
-function drawGraph() {
+function drawGraph(mode) {
     var points = dataArray;
     processData(points);
     // TODO mode
-    processWeekMode(points, 'green', 'buy'); // TODO color, buy cell mode
-    processWeekMode(points, 'yellow', 'cell');
+    switch (mode) {
+        case 'week': {
+            processWeekMode(points, 'green', 'buy'); // TODO color
+            processWeekMode(points, 'yellow', 'cell');
+            break;
+        }
+    }
 }
 
 function processWeekMode(points, color, propName) {
@@ -226,7 +231,7 @@ function changePage() { // TODO Page as param
     ClearArea();
     GetData(currMode); // TODO process bad data
     drawGrid();
-    drawGraph();
+    drawGraph(currMode);
     drawLegend(currMode);
 }
 
@@ -236,7 +241,7 @@ function Init() {
     ClearArea();
     initGridParams();
     drawGrid();
-    drawGraph();
+    drawGraph(currMode);
     drawLegend(currMode);
 }
 

@@ -34,7 +34,7 @@ var valuesStep;*/
 
 
 // graph settings
-var graphPointSize = 5;
+var graphPointSize = 7;
 var graphLineWidth = 1.5;
 var graphLineColor = "yellow";
 
