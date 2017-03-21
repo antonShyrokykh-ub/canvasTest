@@ -41,17 +41,13 @@ function drawGrid() {
 var minVal;
 var maxVal;
 var valuesStep;
-function drawGraph() {
-
-    var points = weekTest;
-
-    
+function processResponce(array) {
     // TODO calculate min and max values 
 
-    minVal = points[0].value;
-    maxVal = points[0].value;
+    minVal = array[0].value;
+    maxVal = array[0].value;
     // find min and max values
-    points.forEach(function (v) {
+    array.forEach(function (v) {
         if (v.value < minVal) {
             minVal = v.value;
         }
@@ -61,43 +57,43 @@ function drawGraph() {
     });
 
     // approximate number of rows
-    valuesStep = ((maxVal.toFixed() - minVal.toFixed()) / rowNumber).toFixed();
-    var _height = maxVal - minVal;
+    valuesStep = ((maxVal.toFixed() - minVal.toFixed()) / (rowNumber-1));
+    console.log(valuesStep);
+}
 
 
+function drawGraph() {
+    var points = weekTest;
+    processResponce(points);
+
+    processWeekMode(points);
+
+}
+
+function processWeekMode(points) {
+    var _diff = maxVal - minVal;
     var rectSize = graphPointSize;
+    var _fullHeight = (moveY * (rowNumber -1));
+    
+    context.lineWidth = graphLineWidth;
+    context.strokeStyle = graphLineColor;
 
-    var startPointY = margin + moveY;
+    console.log(maxVal);
+    console.log(minVal);
 
-    for (var i = 0; i < colNumber; i++) {
-        var _val = points[i].value;
+    for (var i =0; i< points.length; i++ ){
+        var day = moment(points[i].date).day();
+        day = day == 0 ? 7 : day;
+        var _val =  points[i].value;
 
-        var percent = (maxVal - _val) / _height * 100;
-        var realHeight = (moveY * (rowNumber-1)) / 100 * percent;
+        var _persent = (maxVal - _val)/_diff * 100;
+        var _height = (moveY * (rowNumber -1))/100 * _persent;
 
-        context.fillStyle = graphLineColor;
-        context.fillRect(moveX * (i + 1) + rectSize / 2 + gridMarginLeft, realHeight + moveY - rectSize / 2 + gridMarginTop, rectSize, rectSize);
-    }
-
-    {
-        context.beginPath();
-        context.lineWidth = graphLineWidth;
-        context.strokeStyle = graphLineColor;
-
-        var _val = points[0].value;
-
-        var percent = (maxVal - _val) / _height * 100;
-        var realHeight = (moveY * (rowNumber-1)) / 100 * percent;
-        context.moveTo(moveX * (1) + rectSize + gridMarginLeft, realHeight + moveY + gridMarginTop);
-        for (var i = 1; i < colNumber; i++) {
-            _val = points[i].value;
-
-            percent = (maxVal - _val) / _height * 100;
-            realHeight = (moveY * (rowNumber-1)) / 100 * percent;
-
-            context.lineTo(moveX * (i + 1) + rectSize + gridMarginLeft, realHeight + moveY + gridMarginTop);
-        }
-        context.stroke();
+        var _x = margin + gridMarginLeft - (rectSize/2) + (moveX * (day));
+        var _y = margin + gridMarginTop - (rectSize/2) + moveY + _height;
+        console.log(_val + ": " + _x + ' ' + _y);
+        context.fillRect(_x, _y, rectSize,rectSize);
+        
     }
 }
 
@@ -113,12 +109,17 @@ function drawLegend() {
     var _cursorX = margin;
     var _cursorY = margin + moveY * rowNumber;
     var _cursorVal = (+(+minVal.toFixed())).toFixed(2);
-    for (var i =0; i < rowNumber; i++) {
-        context.fillText(_cursorVal, _cursorX + gridMarginLeft - leftLegendPadding, _cursorY);
+    for (var i = 0; i < rowNumber-1; i++) {
+        context.fillText(_cursorVal,
+            _cursorX + gridMarginLeft - leftLegendPadding,
+            _cursorY);
         _cursorY -= moveY;
         _cursorVal = +_cursorVal + +valuesStep;
         _cursorVal = _cursorVal.toFixed(2);
     }
+    context.fillText(_cursorVal,
+            _cursorX + gridMarginLeft - leftLegendPadding,
+            _cursorY);
 
     context.font = "18px Verdana";
     context.textBaseline = "top";
@@ -132,20 +133,20 @@ function drawLegend() {
     }
 }
 
-function setMode(mode){
-    if (mode===undefined){
-        mode ="week";
+function setMode(mode) {
+    if (mode === undefined) {
+        mode = "week";
     }
-    switch(mode){
-        case "week":{
-            colNumber =7;
+    switch (mode) {
+        case "week": {
+            colNumber = 7;
             break;
         }
-        case "month":{
+        case "month": {
             // TODO 
             break;
         }
-        case "year":{
+        case "year": {
             // TODO 
             break;
         }
