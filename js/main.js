@@ -1,6 +1,19 @@
+var _cursorPointer = 0;
+var dataArray;
+function GetData() { // TODO some params (mode, data, ...)
+    // TODO return promise
+    if (_cursorPointer + 1 < weeksArray.length) {
+        _cursorPointer++;
+    }
+    else {
+        _cursorPointer = 0;
+    }
+    dataArray = weeksArray[_cursorPointer];
+}
 
 
-function initGrid() {
+
+function initGridParams() {
     availableWidth = canvas.width - gridMarginLeft - gridMarginRight;
     availableHeight = canvas.height - gridMarginTop - gridMarginBottom;
 
@@ -41,7 +54,8 @@ function drawGrid() {
 var minVal;
 var maxVal;
 var valuesStep;
-function processResponce(array) {
+function processData(array) {
+    // TODO calculate numer of raws depending on the responce data
     // TODO calculate min and max values 
 
     minVal = array[0].value;
@@ -66,9 +80,9 @@ function processResponce(array) {
 
 
 function drawGraph() {
-    var points = weekTest;
-    processResponce(points);
-
+    var points = dataArray;
+    processData(points);
+    // TODO mode
     processWeekMode(points);
 
 }
@@ -96,7 +110,7 @@ function processWeekMode(points) {
     }
 
     // draw lines
-    var _rect_2 = rectSize/2;
+    var _rect_2 = rectSize / 2;
 
     var day = moment(points[0].date).day();
     day = day == 0 ? 7 : day;
@@ -106,7 +120,7 @@ function processWeekMode(points) {
     var _x = margin + gridMarginLeft - (rectSize / 2) + (moveX * (day));
     var _y = margin + gridMarginTop - (rectSize / 2) + moveY + _height;
     context.beginPath();
-    context.moveTo(_x +_rect_2, _y + _rect_2);
+    context.moveTo(_x + _rect_2, _y + _rect_2);
     for (var i = 1; i < points.length; i++) {
         day = moment(points[i].date).day();
         day = day == 0 ? 7 : day;
@@ -160,7 +174,8 @@ function setMode(mode) {
     if (mode === undefined) {
         mode = "week";
     }
-    switch (mode) {
+    currMode = mode;
+    switch (currMode) {
         case "week": {
             colNumber = 7;
             break;
@@ -174,11 +189,30 @@ function setMode(mode) {
             break;
         }
     }
-    initGrid();
+    Init();
+}
+
+function ClearArea() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function changePage() { // TODO Page as param
+    ClearArea();
+    GetData(currMode); // TODO process bad data
+    drawGrid();
+    drawGraph();
+    drawLegend();
 }
 
 
-initGrid();
-drawGrid();
-drawGraph();
-drawLegend();
+function Init() {
+    GetData(currMode); // TODO process bad data
+    ClearArea();
+    initGridParams();
+    drawGrid();
+    drawGraph();
+    drawLegend();
+}
+
+Init();
+
