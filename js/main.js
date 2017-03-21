@@ -50,32 +50,45 @@ function drawGrid() {
     }
 }
 
-
+/*
 var minVal;
 var maxVal;
-var valuesStep;
+var valuesStep;*/
 function processData(array) {
     // TODO calculate numer of raws depending on the responce data
     // TODO calculate min and max values 
+    var buy_minVal = array[0].buy;
+    var buy_maxVal = array[0].buy;
+    var cell_minVal = array[0].cell;
+    var cell_maxVal = array[0].cell;
 
-    minVal = array[0].value;
-    maxVal = array[0].value;
+    var commonMin = array[0].buy;
+    var commonMax = array[0].buy;
+
     // find min and max values
     array.forEach(function (v) {
-        if (v.value < minVal) {
-            minVal = v.value;
+        if (v.buy < buy_minVal) {
+            buy_minVal = v.buy;
         }
-        else if (v.value > maxVal) {
-            maxVal = v.value;
+        else if (v.buy > buy_maxVal) {
+            buy_maxVal = v.buy;
+        }
+        if (v.cell < cell_minVal) {
+            cell_minVal = v.cell;
+        }
+        else if (v.cell > cell_maxVal) {
+            cell_maxVal = v.cell;
         }
     });
+
+    dataSettings.commonMin = buy_minVal < cell_minVal ? buy_minVal : cell_minVal;
+    dataSettings.commonMax = buy_maxVal > cell_maxVal ? buy_maxVal : cell_maxVal;
+    dataSettings.commonStep = ((dataSettings.commonMax.toFixed() - dataSettings.commonMin.toFixed()) / (rowNumber - 1));
+
     // sort by date
     array.sort(function (_a, _b) {
         return moment(_a.date) > moment(_b.date);
     });
-
-    // step
-    valuesStep = ((maxVal.toFixed() - minVal.toFixed()) / (rowNumber - 1));
 }
 
 
@@ -83,24 +96,24 @@ function drawGraph() {
     var points = dataArray;
     processData(points);
     // TODO mode
-    processWeekMode(points);
-
+    processWeekMode(points,'green', 'buy'); // TODO color, buy cell mode
+    processWeekMode(points,'yellow', 'cell');
 }
 
-function processWeekMode(points) {
-    var _diff = maxVal - minVal;
+function processWeekMode(points,color, propName) {
+    var _diff = dataSettings.commonMax - dataSettings.commonMin;
     var rectSize = graphPointSize;
     var _fullHeight = (moveY * (rowNumber - 1));
 
     context.lineWidth = graphLineWidth;
-    context.strokeStyle = graphLineColor;
+    context.strokeStyle = color;
 
     // draw points
     for (var i = 0; i < points.length; i++) {
         var day = moment(points[i].date).day();
         day = day == 0 ? 7 : day;
-        var _val = points[i].value;
-        var _persent = (maxVal - _val) / _diff * 100;
+        var _val = points[i][propName];
+        var _persent = (dataSettings.commonMax - _val) / _diff * 100;
         var _height = (moveY * (rowNumber - 1)) / 100 * _persent;
         var _x = margin + gridMarginLeft + (moveX * (day));
         var _y = margin + gridMarginTop + moveY + _height;
@@ -114,8 +127,8 @@ function processWeekMode(points) {
 
     var day = moment(points[0].date).day();
     day = day == 0 ? 7 : day;
-    var _val = points[0].value;
-    var _persent = (maxVal - _val) / _diff * 100;
+    var _val =  points[0][propName];
+    var _persent = (dataSettings.commonMax - _val) / _diff * 100;
     var _height = (moveY * (rowNumber - 1)) / 100 * _persent;
     var _x = margin + gridMarginLeft - (rectSize / 2) + (moveX * (day));
     var _y = margin + gridMarginTop - (rectSize / 2) + moveY + _height;
@@ -124,8 +137,8 @@ function processWeekMode(points) {
     for (var i = 1; i < points.length; i++) {
         day = moment(points[i].date).day();
         day = day == 0 ? 7 : day;
-        _val = points[i].value;
-        _persent = (maxVal - _val) / _diff * 100;
+        _val = points[i][propName];
+        _persent = (dataSettings.commonMax - _val) / _diff * 100;
         _height = (moveY * (rowNumber - 1)) / 100 * _persent;
         _x = margin + gridMarginLeft - (rectSize / 2) + (moveX * (day));
         _y = margin + gridMarginTop - (rectSize / 2) + moveY + _height;
@@ -145,13 +158,13 @@ function drawLegend() {
     // TODO switch legend to different sizes
     var _cursorX = margin;
     var _cursorY = margin + moveY * rowNumber;
-    var _cursorVal = (+(+minVal.toFixed())).toFixed(2);
+    var _cursorVal = (+(+dataSettings.commonMin.toFixed())).toFixed(2);
     for (var i = 0; i < rowNumber - 1; i++) {
         context.fillText(_cursorVal,
             _cursorX + gridMarginLeft - leftLegendPadding,
             _cursorY);
         _cursorY -= moveY;
-        _cursorVal = +_cursorVal + +valuesStep;
+        _cursorVal = +_cursorVal + +dataSettings.commonStep;
         _cursorVal = _cursorVal.toFixed(2);
     }
     context.fillText(_cursorVal,
