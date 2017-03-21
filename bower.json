@@ -1,0 +1,17 @@
+{
+  "name": "canvas_test",
+  "description": "",
+  "main": "index.js",
+  "license": "ISC",
+  "homepage": "https://github.com/antonShyrokykh-ub/canvasTest",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests",
+    "libs"
+  ],
+  "dependencies": {
+    "moment": "^2.18.0"
+  }
+}
