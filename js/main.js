@@ -55,10 +55,13 @@ function processResponce(array) {
             maxVal = v.value;
         }
     });
+    // sort by date
+    array.sort(function (_a, _b) {
+        return moment(_a.date) > moment(_b.date);
+    });
 
-    // approximate number of rows
-    valuesStep = ((maxVal.toFixed() - minVal.toFixed()) / (rowNumber-1));
-    console.log(valuesStep);
+    // step
+    valuesStep = ((maxVal.toFixed() - minVal.toFixed()) / (rowNumber - 1));
 }
 
 
@@ -73,28 +76,48 @@ function drawGraph() {
 function processWeekMode(points) {
     var _diff = maxVal - minVal;
     var rectSize = graphPointSize;
-    var _fullHeight = (moveY * (rowNumber -1));
-    
+    var _fullHeight = (moveY * (rowNumber - 1));
+
     context.lineWidth = graphLineWidth;
     context.strokeStyle = graphLineColor;
 
-    console.log(maxVal);
-    console.log(minVal);
-
-    for (var i =0; i< points.length; i++ ){
+    // draw points
+    for (var i = 0; i < points.length; i++) {
         var day = moment(points[i].date).day();
         day = day == 0 ? 7 : day;
-        var _val =  points[i].value;
-
-        var _persent = (maxVal - _val)/_diff * 100;
-        var _height = (moveY * (rowNumber -1))/100 * _persent;
-
-        var _x = margin + gridMarginLeft - (rectSize/2) + (moveX * (day));
-        var _y = margin + gridMarginTop - (rectSize/2) + moveY + _height;
-        console.log(_val + ": " + _x + ' ' + _y);
-        context.fillRect(_x, _y, rectSize,rectSize);
-        
+        var _val = points[i].value;
+        var _persent = (maxVal - _val) / _diff * 100;
+        var _height = (moveY * (rowNumber - 1)) / 100 * _persent;
+        var _x = margin + gridMarginLeft + (moveX * (day));
+        var _y = margin + gridMarginTop + moveY + _height;
+        context.beginPath();
+        context.arc(_x, _y, rectSize, 0, 2 * Math.PI, false);
+        context.stroke();
     }
+
+    // draw lines
+    var _rect_2 = rectSize/2;
+
+    var day = moment(points[0].date).day();
+    day = day == 0 ? 7 : day;
+    var _val = points[0].value;
+    var _persent = (maxVal - _val) / _diff * 100;
+    var _height = (moveY * (rowNumber - 1)) / 100 * _persent;
+    var _x = margin + gridMarginLeft - (rectSize / 2) + (moveX * (day));
+    var _y = margin + gridMarginTop - (rectSize / 2) + moveY + _height;
+    context.beginPath();
+    context.moveTo(_x +_rect_2, _y + _rect_2);
+    for (var i = 1; i < points.length; i++) {
+        day = moment(points[i].date).day();
+        day = day == 0 ? 7 : day;
+        _val = points[i].value;
+        _persent = (maxVal - _val) / _diff * 100;
+        _height = (moveY * (rowNumber - 1)) / 100 * _persent;
+        _x = margin + gridMarginLeft - (rectSize / 2) + (moveX * (day));
+        _y = margin + gridMarginTop - (rectSize / 2) + moveY + _height;
+        context.lineTo(_x + _rect_2, _y + _rect_2);
+    }
+    context.stroke();
 }
 
 function drawLegend() {
@@ -109,7 +132,7 @@ function drawLegend() {
     var _cursorX = margin;
     var _cursorY = margin + moveY * rowNumber;
     var _cursorVal = (+(+minVal.toFixed())).toFixed(2);
-    for (var i = 0; i < rowNumber-1; i++) {
+    for (var i = 0; i < rowNumber - 1; i++) {
         context.fillText(_cursorVal,
             _cursorX + gridMarginLeft - leftLegendPadding,
             _cursorY);
@@ -118,8 +141,8 @@ function drawLegend() {
         _cursorVal = _cursorVal.toFixed(2);
     }
     context.fillText(_cursorVal,
-            _cursorX + gridMarginLeft - leftLegendPadding,
-            _cursorY);
+        _cursorX + gridMarginLeft - leftLegendPadding,
+        _cursorY);
 
     context.font = "18px Verdana";
     context.textBaseline = "top";
