@@ -96,11 +96,11 @@ function drawGraph() {
     var points = dataArray;
     processData(points);
     // TODO mode
-    processWeekMode(points,'green', 'buy'); // TODO color, buy cell mode
-    processWeekMode(points,'yellow', 'cell');
+    processWeekMode(points, 'green', 'buy'); // TODO color, buy cell mode
+    processWeekMode(points, 'yellow', 'cell');
 }
 
-function processWeekMode(points,color, propName) {
+function processWeekMode(points, color, propName) {
     var _diff = dataSettings.commonMax - dataSettings.commonMin;
     var rectSize = graphPointSize;
     var _fullHeight = (moveY * (rowNumber - 1));
@@ -127,7 +127,7 @@ function processWeekMode(points,color, propName) {
 
     var day = moment(points[0].date).day();
     day = day == 0 ? 7 : day;
-    var _val =  points[0][propName];
+    var _val = points[0][propName];
     var _persent = (dataSettings.commonMax - _val) / _diff * 100;
     var _height = (moveY * (rowNumber - 1)) / 100 * _persent;
     var _x = margin + gridMarginLeft - (rectSize / 2) + (moveX * (day));
@@ -147,9 +147,7 @@ function processWeekMode(points,color, propName) {
     context.stroke();
 }
 
-function drawLegend() {
-    // TODO switch mode
-
+function drawValueLegend() {
     context.fillStyle = legendColor;
     context.font = "15px Verdana";
     context.textBaseline = "middle";
@@ -170,17 +168,32 @@ function drawLegend() {
     context.fillText(_cursorVal,
         _cursorX + gridMarginLeft - leftLegendPadding,
         _cursorY);
+}
 
+function drawTextLegend(mode) {
     context.font = "18px Verdana";
     context.textBaseline = "top";
     context.textAlign = "center";
 
-    _cursorY = canvas.height + bottomLegendPadding - gridMarginBottom;
-    _cursorX = margin + gridMarginLeft + moveX;
-    for (var i = 0; i < colNumber; i++) {
-        context.fillText(days[i], _cursorX, _cursorY);
-        _cursorX += moveX;
+    switch (mode) {
+        case 'week': {
+            _cursorY = canvas.height + bottomLegendPadding - gridMarginBottom;
+            _cursorX = margin + gridMarginLeft + moveX;
+            for (var i = 0; i < colNumber; i++) {
+                context.fillText(days[i], _cursorX, _cursorY);
+                _cursorX += moveX;
+            }
+            break;
+        }
     }
+}
+
+function drawLegend(mode) {
+
+    drawValueLegend();
+
+
+    drawTextLegend(mode);
 }
 
 function setMode(mode) {
@@ -214,7 +227,7 @@ function changePage() { // TODO Page as param
     GetData(currMode); // TODO process bad data
     drawGrid();
     drawGraph();
-    drawLegend();
+    drawLegend(currMode);
 }
 
 
@@ -224,7 +237,7 @@ function Init() {
     initGridParams();
     drawGrid();
     drawGraph();
-    drawLegend();
+    drawLegend(currMode);
 }
 
 Init();
