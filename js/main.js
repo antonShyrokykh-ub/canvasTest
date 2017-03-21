@@ -97,9 +97,14 @@ function drawGraph(mode) {
     processData(points);
     // TODO mode
     switch (mode) {
-        case 'week': {
-            processWeekMode(points, 'green', 'buy'); // TODO color
-            processWeekMode(points, 'yellow', 'cell');
+        case ENUMS.WEEK_MODE: {
+            if (currencyDisplayMode == ENUMS.BUY_CELL) {
+                processWeekMode(points, 'green', 'buy'); // TODO get color
+                processWeekMode(points, 'yellow', 'cell'); // TODO get color
+            }
+            else{
+                processWeekMode(points, 'yellow', 'official'); // TODO get color
+            }
             break;
         }
     }
@@ -181,7 +186,7 @@ function drawTextLegend(mode) {
     context.textAlign = "center";
 
     switch (mode) {
-        case 'week': {
+        case ENUMS.WEEK_MODE: {
             _cursorY = canvas.height + bottomLegendPadding - gridMarginBottom;
             _cursorX = margin + gridMarginLeft + moveX;
             for (var i = 0; i < colNumber; i++) {
@@ -203,19 +208,19 @@ function drawLegend(mode) {
 
 function setMode(mode) {
     if (mode === undefined) {
-        mode = "week";
+        mode = ENUMS.WEEK_MODE;
     }
     currMode = mode;
     switch (currMode) {
-        case "week": {
+        case ENUMS.WEEK_MODE: {
             colNumber = 7;
             break;
         }
-        case "month": {
+        case ENUMS.MONTH_MODE: {
             // TODO 
             break;
         }
-        case "year": {
+        case ENUMS.YEAR_MODE: {
             // TODO 
             break;
         }
