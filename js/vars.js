@@ -51,12 +51,11 @@ var ENUMS = {
 };
 // display mode
 var currMode = ENUMS.WEEK_MODE;
-var currencyDisplayMode = ENUMS.OFFICIAL;
+var currencyDisplayMode = ENUMS.BUY_CELL;
 
 
 var monthes = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
 var days = ['Mon', 'Tue', 'Wed', 'Thi', 'Fri', 'Sat', 'Sun'];
-
 
 
 var weekTest =[

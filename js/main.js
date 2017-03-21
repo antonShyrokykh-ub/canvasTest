@@ -57,6 +57,7 @@ var valuesStep;*/
 function processData(array) {
     // TODO calculate numer of raws depending on the responce data
     // TODO calculate min and max values 
+
     var buy_minVal = array[0].buy;
     var buy_maxVal = array[0].buy;
     var cell_minVal = array[0].cell;
@@ -206,6 +207,11 @@ function drawLegend(mode) {
     drawTextLegend(mode);
 }
 
+function setCurrencyDisplayMode(mode){
+    currencyDisplayMode = mode;
+    Init();
+}
+
 function setMode(mode) {
     if (mode === undefined) {
         mode = ENUMS.WEEK_MODE;
@@ -234,15 +240,16 @@ function ClearArea() {
 
 function changePage() { // TODO Page as param
     ClearArea();
-    GetData(currMode); // TODO process bad data
     drawGrid();
     drawGraph(currMode);
     drawLegend(currMode);
 }
 
 
-function Init() {
-    GetData(currMode); // TODO process bad data
+function Init(_data) {
+    if (_data !== undefined){
+        dataArray =_data;
+    }
     ClearArea();
     initGridParams();
     drawGrid();
@@ -250,5 +257,5 @@ function Init() {
     drawLegend(currMode);
 }
 
-Init();
+
 

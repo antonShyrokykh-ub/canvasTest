@@ -12,6 +12,8 @@
     "libs"
   ],
   "dependencies": {
-    "moment": "^2.18.0"
+    "moment": "^2.18.0",
+    "angular": "^1.6.3",
+    "jQuery": "^3.2.1"
   }
 }

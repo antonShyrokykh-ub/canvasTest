@@ -1,19 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="testApp">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Canvas test</title>
     <link rel="stylesheet" href="css/main.css">
+    <script src="libs/jQuery/dist/jquery.js"></script>
     <script src="libs/moment/moment.js"></script>
 </head>
-<body>
-    <canvas id="canvas" width="600", height="600">
-        Canvas is not supported
-    </canvas>
+
+<body ng-controller="testCtrl">
+    <div id="canvasContainer">
+        <div id="info"></div>
+        <canvas id="canvas">
+            Canvas is not supported
+        </canvas>
+    </div>
     <button type="button" onclick="changePage()">Next page</button>
+    <script src="js/pageInit.js"></script>
+    <script src="libs/angular/angular.js"></script>
     <script src="js/vars.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/app/globalVars.js"></script>
+    <script src="js/app/app.js"></script>
+    <script src="js/app/controller.js"></script>
+    <script src="js/app/service.js"></script>
 </body>
+
 </html>
